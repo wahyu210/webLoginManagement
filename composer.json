@@ -1,0 +1,27 @@
+{
+  "name": "mochamad-wahyu/weblogin-management",
+  "description": "Belajar WebLoginmanagement",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "MochamadWahyu\\Phpmvc\\": "app/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "MochamadWahyu\\Phpmvc\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Mochamad Wahyu",
+      "email": "wahyu212122@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=8"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "11.3.1"
+  }
+}
