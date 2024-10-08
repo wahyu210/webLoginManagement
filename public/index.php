@@ -13,10 +13,7 @@ use MochamadWahyu\Phpmvc\Config\Database;
 use MochamadWahyu\Phpmvc\Controller\HomeController;
 use MochamadWahyu\Phpmvc\Controller\UserController;
 
-use MochamadWahyu\Phpmvc\Controller\ProductController;
-use MochamadWahyu\Phpmvc\MiddleWare\AuthMiddleware;
-use MochamadWahyu\Phpmvc\Controller\LoginController;
-use MochamadWahyu\Phpmvc\Domain\User;
+
 
 Database::getConnection('prod');
 
