@@ -35,7 +35,7 @@ class Router
                     $controller = new $route['controller'];
                     array_shift($variables);
                     call_user_func_array([$controller, $function], $variables);
-                    echo "Controller loaded successfully";
+                    // echo "Controller loaded successfully";
 
                     return;
                 } catch (\Exception $e) {

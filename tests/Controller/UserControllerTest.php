@@ -7,7 +7,7 @@ namespace MochamadWahyu\Phpmvc\App {
 
 }
 
-namespace MochamadWahyu\Phpmvc\Service{
+namespace MochamadWahyu\Phpmvc\Service {
     function setcookie(string $name, string $value)
     {
         echo "$name: $value";
@@ -17,11 +17,13 @@ namespace MochamadWahyu\Phpmvc\Service{
 namespace MochamadWahyu\Phpmvc\Controller {
 
     use MochamadWahyu\Phpmvc\Config\Database;
+    use MochamadWahyu\Phpmvc\Domain\Session;
     use MochamadWahyu\Phpmvc\Domain\User;
     use MochamadWahyu\Phpmvc\Repository\UserRepository;
     use PHPUnit\Framework\TestCase;
     use MochamadWahyu\Phpmvc\app\View;
     use MochamadWahyu\Phpmvc\Repository\SessionRepository;
+    use MochamadWahyu\Phpmvc\Service\SessionService;
 
     class UserControllerTest extends TestCase
     {
@@ -159,5 +161,22 @@ namespace MochamadWahyu\Phpmvc\Controller {
             $this->expectOutputRegex('[Password]');
             $this->expectOutputRegex('[id or password is wrong]');
         }
+        public function testLogout()
+        {
+            $user = new User();
+            $user->id = 'wahyu1';
+            $user->name = 'wahyu';
+            $user->password = password_hash('123', PASSWORD_BCRYPT);
+            $this->userRepository->save($user);
+
+            $session = new Session();
+            $session->id = uniqid();
+            $session->userId = $user->id;
+            $this->sessionRepository->save($session);
+            $_COOKIE[SessionService::$COOKIE_NAME] = $session->id;
+
+            $this->userController->logout();
+        }
     }
+
 }
