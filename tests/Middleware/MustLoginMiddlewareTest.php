@@ -11,8 +11,12 @@ class MustLoginMiddlewareTest extends TestCase
     protected function setUp(): void
     {
         $this->mustLoginMiddleware = new MustLoginMiddleware();
+        putenv("mode=test");
     }
     
-    public function testBefore(){}
+    public function testBefore(){
+        $this->mustLoginMiddleware->before();
+        $this->expectOutputString('');
+    }
     
 }
