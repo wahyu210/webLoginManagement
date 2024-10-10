@@ -7,11 +7,11 @@ function getDatabaseConfig():array{
             'test' => [
                 'url' => 'mysql:host=localhost:3306;dbname=php_login_management_test',
                 'username' => "root",
-                "password" => "pwdpwd8",
+                "password" => "",
             ], 'prod' => [
-                    'url' => 'mysql:host=localhost:3308;dbname=php_login_management',
+                    'url' => 'mysql:host=localhost:3306;dbname=php_login_management',
                     'username' => "root",
-                    "password" => "pwdpwd8",
+                    "password" => "",
                 ],
         ],
     ];
