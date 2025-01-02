@@ -22,8 +22,9 @@ public function create(string $userId):Session{
         $session->id = uniqid();
         $session->userId = $userId;
         $this->sessionRepository->save($session);
-        setcookie(self::$COOKIE_NAME, $session->id, time() + (60 * 60 * 24 * 30), "/");
-        return $session;
+        // setcookie(self::$COOKIE_NAME, $session->id, time() + (60 * 60 * 24 * 30), "/");
+        setcookie(self::$COOKIE_NAME, $session->id);
+             return $session;
 
 }
 public function destroy(){

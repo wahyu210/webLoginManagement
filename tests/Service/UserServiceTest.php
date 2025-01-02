@@ -5,22 +5,29 @@ use MochamadWahyu\Phpmvc\Config\Database;
 use MochamadWahyu\Phpmvc\Domain\User;
 use MochamadWahyu\Phpmvc\Exception\ValidationException;
 use MochamadWahyu\Phpmvc\Model\UserLoginRequest;
+use MochamadWahyu\Phpmvc\Model\UserProfileUpdateRequest;
 use MochamadWahyu\Phpmvc\Model\UserRegisterRequest;
+use MochamadWahyu\Phpmvc\Repository\SessionRepository;
 use MochamadWahyu\Phpmvc\Repository\UserRepository;
-use MochamadWahyu\Phpmvc\Repository\UserRepositoryTest;
-use PhpParser\Builder\Use_;
+// use MochamadWahyu\Phpmvc\Repository\UserRepositoryTest;
+
 use PHPUnit\Framework\TestCase;
 
+use function PHPUnit\Framework\assertTrue;
 
 class UserServiceTest extends TestCase
 {
     private UserService $userService;
     private UserRepository $userRepository;
+    private SessionRepository $sessionRepository;
     protected function setUp() : void
     {
         $connection = Database::getConnection();
         $this->userRepository = new UserRepository($connection);
         $this->userService = new UserService($this->userRepository);
+        $this->sessionRepository = new SessionRepository($connection);
+
+        $this->sessionRepository->deleteAll();
         $this->userRepository->deleteAll();
 
 
@@ -104,4 +111,28 @@ class UserServiceTest extends TestCase
         self::assertTrue(password_verify($request->password, $user->password));
     }
 
+
+    public function testUpdateSuccess()
+{
+        $user = new User();
+        $user->id = 'wahyu';
+        $user->name = 'Wahyu';
+        $user->password = password_hash('wahyu', PASSWORD_BCRYPT);
+        $this->userRepository->save($user);
+
+
+        $request = new UserProfileUpdateRequest();
+        $request->id = 'wahyu';
+        $request->name = 'budi';
+        $this->userService->updateProfile($request);
+        $result = $this->userRepository->findById($user->id);
+        self::assertEquals($request->name, $user->name);
+
+    }
+
+public function testUpdateValidationError(){
+
+}
+
+public function testUpdateNotFound(){}
 }

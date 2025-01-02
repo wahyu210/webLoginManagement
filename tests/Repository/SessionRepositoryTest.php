@@ -19,6 +19,7 @@ class SessionRepositoryTest extends TestCase{
         $this->sessionRepository->deleteAll();
         $this->userRepository->deleteAll();
 
+
         $user = new User();
         $user->id = 'wahyu';
         $user->name = 'Wahyu';
