@@ -5,6 +5,7 @@ use MochamadWahyu\Phpmvc\App\View;
 use MochamadWahyu\Phpmvc\Config\Database;
 use MochamadWahyu\Phpmvc\Exception\ValidationException;
 use MochamadWahyu\Phpmvc\Model\UserLoginRequest;
+use MochamadWahyu\Phpmvc\Model\UserProfileUpdateRequest;
 use MochamadWahyu\Phpmvc\Model\UserRegisterRequest;
 use MochamadWahyu\Phpmvc\Repository\SessionRepository;
 use MochamadWahyu\Phpmvc\Repository\UserRepository;
@@ -78,5 +79,47 @@ class UserController
     public function logout(){
         $this->sessionService->destroy();
         View::redirect('/');
+    }
+
+    public function updateProfile()
+    {
+       $user= $this->sessionService->current();
+
+        View::render('User/profile', [
+            'title' => 'Update user profile',
+            'userId'=> $user->id,
+            'name'=> $user->name
+        ]);
+    }
+    public function postUpdateProfile(){
+        $user= $this->sessionService->current();
+        $request=new UserProfileUpdateRequest();
+        $request->id=$user->id;
+        $request->name=$_POST['name'];
+        try {
+            $response= $this->userService->updateProfile($request);
+            View::redirect('/');
+        }catch (ValidationException $exception) {
+            View::render('User/profile', [
+                'title'=> 'Update user profile',
+                'error'=>$exception->getMessage(),
+                'user'=>[
+                    'id'=> $user->id,
+                    'name'=>$_POST['name'],
+                ]
+            ]);
+        }
+
+    }
+
+    public function updatePassword(){
+        $user= $this->sessionService->current();
+
+        View::render('User/Password', [
+            'title' => 'Update Password user profile',
+            'userId'=> $user->id,
+            'oldPassword'=> $user->password,
+
+        ]);
     }
 }

@@ -26,7 +26,7 @@ class HomeController{
             View::render('Home/Dashboard', model: [
                 'title' => 'Dashboard',
                 'user'=>['name' => $user->name]]);
-                
+
         }
         // echo "HomeController.index()";
         
