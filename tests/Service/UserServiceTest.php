@@ -1,9 +1,9 @@
 <?php
 namespace MochamadWahyu\Phpmvc\Service;
 
+use Cassandra\Exception\ValidationException;
 use MochamadWahyu\Phpmvc\Config\Database;
 use MochamadWahyu\Phpmvc\Domain\User;
-use MochamadWahyu\Phpmvc\Exception\ValidationException;
 use MochamadWahyu\Phpmvc\Model\UserLoginRequest;
 use MochamadWahyu\Phpmvc\Model\UserProfileUpdateRequest;
 use MochamadWahyu\Phpmvc\Model\UserRegisterRequest;
@@ -149,4 +149,58 @@ public function testUpdateNotFound(){
     $request->name = 'budi';
     $this->userService->updateProfile($request);
 }
+
+public function testUpdatepasswordSuccess(){
+    $user = new User();
+    $user->id = 'wahyu';
+    $user->name = 'Wahyu';
+    $user->password = password_hash('wahyu', PASSWORD_BCRYPT);
+    $this->userRepository->save($user);
+
+    $request= new UserPasswordUpdateRequest();
+    $request->id= 'wahyu';
+    $request->oldPassword='wahyu';
+    $request->newPassword='1234';
+    $this->userRepository->updatePasssword($request);
+    $result=$this->userRepository->findById($user->id);
+    self::assertEquals(password_verify($request->newPassword, $result->password));
+}
+    public function testUpdatepasswordValidationError(){
+
+        $this->expectException(ValidationException::class);
+        $request= new UserPasswordUpdateRequest();
+        $request->id= 'wahyu';
+        $request->oldPassword='wahyu';
+        $request->newPassword='1234';
+        $this->userRepository->updatePasssword($request);
+
+    }
+    public function testUpdatePasswordWrongOldPassword(){
+
+        $this->expectException(ValidationException::class);
+        $user = new User();
+        $user->id = 'wahyu';
+        $user->name = 'Wahyu';
+        $user->password = password_hash('wahyu', PASSWORD_BCRYPT);
+        $this->userRepository->save($user);
+
+        $request= new UserPasswordUpdateRequest();
+        $request->id= 'wahyu';
+        $request->oldPassword='salah';
+        $request->newPassword='1234';
+        $this->userRepository->updatePasssword($request);
+        $result=$this->userRepository->findById($user->id);
+    }
+    public function testUpdatepasswordNotFound(){
+        $this->expectException(ValidationException::class);
+
+        $request= new UserPasswordUpdateRequest();
+        $request->id= 'wahyu';
+        $request->oldPassword='salah';
+        $request->newPassword='1234';
+        $this->userRepository->updatePasssword($request);
+        $result=$this->userRepository->findById($user->id);
+    }
+
+
 }

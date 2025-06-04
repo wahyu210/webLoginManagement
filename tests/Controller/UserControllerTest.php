@@ -176,7 +176,74 @@ namespace MochamadWahyu\Phpmvc\Controller {
             $_COOKIE[SessionService::$COOKIE_NAME] = $session->id;
 
             $this->userController->logout();
+            $this->expectOutputRegex('[Location: /]');
+            $this->expectOutputRegex('[X-MCD-SESSION]');
         }
+         public  function testUpdateProfile()   {
+
+             $user = new User();
+             $user->id = 'wahyu1';
+             $user->name = 'wahyu';
+             $user->password = password_hash('123', PASSWORD_BCRYPT);
+             $this->userRepository->save($user);
+
+             $session = new Session();
+             $session->id = uniqid();
+             $session->userId = $user->id;
+             $this->sessionRepository->save($session);
+             $_COOKIE[SessionService::$COOKIE_NAME] = $session->id;
+
+             $_POST['id'] = 'wahyu21';
+             $this->userController->postUpdateProfile();
+             $this->expectOutputRegex('[Profile');
+             $this->expectOutputRegex('[Name]');
+             $this->expectOutputRegex('[Id]');
+             $this->expectOutputRegex('[wahyu1]');
+
+
+         }
+             public function testUpdateProfileSuccess(){
+                 $user = new User();
+                 $user->id = 'wahyu1';
+                 $user->name = 'wahyu';
+                 $user->password = password_hash('123', PASSWORD_BCRYPT);
+                 $this->userRepository->save($user);
+
+                 $session = new Session();
+                 $session->id = uniqid();
+                 $session->userId = $user->id;
+                 $this->sessionRepository->save($session);
+                 $_COOKIE[SessionService::$COOKIE_NAME] = $session->id;
+
+                 $_POST['id'] = 'wahyu21';
+                 $this->userController->postUpdateProfile();
+                 $this->expectOutputRegex('[Location: /]');
+
+                 $result=$this->userRepository->findById('wahyu1');
+                 self::assertEquals('wahyu21', $result->name);
+             }
+
+             public function testUpdateProfileValidationError(){
+                 $user = new User();
+                 $user->id = 'wahyu1';
+                 $user->name = 'wahyu';
+                 $user->password = password_hash('123', PASSWORD_BCRYPT);
+                 $this->userRepository->save($user);
+
+                 $session = new Session();
+                 $session->id = uniqid();
+                 $session->userId = $user->id;
+                 $this->sessionRepository->save($session);
+                 $_COOKIE[SessionService::$COOKIE_NAME] = $session->id;
+
+                 $_POST['id'] = '';
+                 $this->userController->postUpdateProfile();
+                 $this->expectOutputRegex('[Profile');
+                 $this->expectOutputRegex('[Name]');
+                 $this->expectOutputRegex('[Id]');
+                 $this->expectOutputRegex('[]');
+                 $this->expectOutputRegex('[Id, Name , Password can not blank]');
+             }
     }
 
 }

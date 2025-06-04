@@ -24,7 +24,7 @@
                         <label for="id">Id</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input name="oldPassword" type="password" class="form-control" id="oldPassword" placeholder="old password" value="<?= $model['oldPassword']??''?>">
+                        <input name="oldPassword" type="password" class="form-control" id="oldPassword" placeholder="old password" value="">
                         <label for="oldPassword">Old Password</label>
                     </div>
                     <div class="form-floating mb-3">
