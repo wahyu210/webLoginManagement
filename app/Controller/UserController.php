@@ -1,18 +1,19 @@
 <?php
 namespace MochamadWahyu\Phpmvc\Controller;
 
-use Cassandra\Exception\ValidationException;
-use Couchbase\View;
+
 use MochamadWahyu\Phpmvc\App\View;
 use MochamadWahyu\Phpmvc\Config\Database;
 use MochamadWahyu\Phpmvc\Exception\ValidationException;
 use MochamadWahyu\Phpmvc\Model\UserLoginRequest;
 use MochamadWahyu\Phpmvc\Model\UserProfileUpdateRequest;
 use MochamadWahyu\Phpmvc\Model\UserRegisterRequest;
+use MochamadWahyu\Phpmvc\Model\UserPasswordUpdateRequest;
 use MochamadWahyu\Phpmvc\Repository\SessionRepository;
 use MochamadWahyu\Phpmvc\Repository\UserRepository;
 use MochamadWahyu\Phpmvc\Service\SessionService;
 use MochamadWahyu\Phpmvc\Service\UserService;
+
 
 class UserController
 {
@@ -138,9 +139,9 @@ $request->newPassword=$_POST['newPassword'];
             View::redirect('/');
         }catch (ValidationException $exception) {
             View::render('User/Password', [
-                'title'=>'Update Password user ',
+                'title'=>'Update Password user Profile ',
                 'error'=>$exception->getMessage(),
-                'user'=>[
+                'userId'=>[
                     'id'=> $user->id,
                 ]
             ]);

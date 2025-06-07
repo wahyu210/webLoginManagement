@@ -1,7 +1,7 @@
 <?php
 namespace MochamadWahyu\Phpmvc\Service;
 
-use Cassandra\Exception\ValidationException;
+
 use MochamadWahyu\Phpmvc\Config\Database;
 use MochamadWahyu\Phpmvc\Model\UserRegisterRequest;
 use MochamadWahyu\Phpmvc\Domain\User;
@@ -10,16 +10,20 @@ use MochamadWahyu\Phpmvc\Model\UserLoginRequest;
 use MochamadWahyu\Phpmvc\Model\UserLoginResponse;
 use MochamadWahyu\Phpmvc\Model\UserProfileUpdateRequest;
 use MochamadWahyu\Phpmvc\Model\UserProfileUpdateResponse;
+use MochamadWahyu\Phpmvc\Model\UserPasswordUpdateResponse;
+use MochamadWahyu\Phpmvc\Model\UserPasswordUpdateRequest;
 use MochamadWahyu\Phpmvc\Repository\UserRepository;
 use MochamadWahyu\Phpmvc\Model\UserRegisterResponse;
 
 class UserService
 {
     private UserRepository $userRepository;
+
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
     }
+
     public function register(UserRegisterRequest $request): UserRegisterResponse
     {
         $this->validateRegisrationRequest($request);
@@ -44,12 +48,14 @@ class UserService
             throw $exception;
         }
     }
+
     public function validateRegisrationRequest(UserRegisterRequest $request)
     {
         if ($request->id === null || $request->name === null || $request->password === null || trim($request->id === '') || trim($request->name === '') || trim($request->password === '')) {
             throw new ValidationException('Id, Name , Password can not blank');
         }
     }
+
     public function login(UserLoginRequest $request): UserLoginResponse
     {
         $this->validateUserLoginRequest($request);
@@ -72,15 +78,16 @@ class UserService
             throw new ValidationException('Id, Name , Password can not blank');
         }
     }
+
     public function updateProfile(UserProfileUpdateRequest $request): UserProfileUpdateResponse
     {
         $this->validateUserProfileRequest($request);
 
-        try{
+        try {
             database::beginTransaction();
 
             $user = $this->userRepository->findById($request->id);
-            if($user==null){
+            if ($user == null) {
                 throw new ValidationException('user is not found');
             }
 
@@ -92,47 +99,54 @@ class UserService
             $response = new UserProfileUpdateResponse;
             $response->user = $user;
             return $response;
-        }
-        catch(\Exception $exception) {
-            Database::rollbackTransaction();
+        } catch (\Exception $exception) {
+            database::rollbackTransaction();
             throw $exception;
         }
 
     }
-    private function validateUserProfileRequest(UserProfileUpdateRequest $request) {
+
+    private function validateUserProfileRequest(UserProfileUpdateRequest $request)
+    {
         if ($request->id === null || $request->name === null || trim($request->id === '') || trim($request->name === '')) {
             throw new ValidationException('Id, Name , Password can not blank');
         }
     }
-    public function updatePassword(UserPasswordUpdateRequest $request): UserPasswordUpdateResponse {
-        $this->validateUserPasswordRequest($request);
+
+    public function updatePassword(UserPasswordUpdateRequest $request): UserPasswordUpdateResponse
+    {
+        $this->validateUpdatePasswordRequest($request);
 
         try {
-            Database::beginTransaction();
-            $user= $this->userRepository->findById($request->id);
-            if($user==null){
+            database::beginTransaction();
+            $user = $this->userRepository->findById($request->id);
+            if ($user == null) {
                 throw new ValidationException('user is not found');
             }
-            if(!password_verify($request->password, $user->password)){
+            if (!password_verify($request->oldPassword, $user->password)) {
                 throw new ValidationException('password is wrong');
             }
-            $user->password = password_hash($request->password, PASSWORD_BCRYPT);
+            $user->password = password_hash($request->newPassword, PASSWORD_BCRYPT);
             $this->userRepository->update($user);
-            database::commit();
-            $response= new UserPasswordUpdateResponse();
+//            Database::commit();
+            Database::commitTransaction();
+
+            $response = new UserPasswordUpdateResponse();
             $response->user = $user;
             return $response;
-        }catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             Database::rollbackTransaction();
             throw $exception;
         }
 
+
     }
 
 
-public function validateUpdatePasswordRequest(UserPasswordUpdateRequest $request){
-    if ($request->id === null || $request->oldPassword === null || $request->newPassword === null ||trim($request->id === '') || trim($request->oldPassword === ''|| trim($request->newPassword === '') {
-        throw new ValidationException('Id, oldPassword , newPassword can not blank');
+    public function validateUpdatePasswordRequest(UserPasswordUpdateRequest $request)
+    {
+        if ($request->id === null || $request->oldPassword === null || $request->newPassword === null || trim($request->id) === '' || trim($request->oldPassword) === '' || trim($request->newPassword) === '') {
+            throw new ValidationException('Id, oldPassword , newPassword can not blank');
+        }
     }
-}
 }

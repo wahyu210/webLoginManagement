@@ -20,9 +20,11 @@
             <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="/users/password">
                 <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="/users/password">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="id" placeholder="id" disabled value="<?= $model['userId']??''?>">
+                        <input type="text" class="form-control" id="id" placeholder="id" readonly value="<?= $model['userId']['id']??''?>">
                         <label for="id">Id</label>
                     </div>
+
+
                     <div class="form-floating mb-3">
                         <input name="oldPassword" type="password" class="form-control" id="oldPassword" placeholder="old password" value="">
                         <label for="oldPassword">Old Password</label>

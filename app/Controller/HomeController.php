@@ -28,6 +28,7 @@ class HomeController{
                 'user'=>['name' => $user->name]]);
 
         }
+        //
         // echo "HomeController.index()";
         
     }
