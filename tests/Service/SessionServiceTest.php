@@ -7,12 +7,11 @@ use MochamadWahyu\Phpmvc\Domain\User;
 use MochamadWahyu\Phpmvc\Repository\SessionRepository;
 use MochamadWahyu\Phpmvc\Repository\UserRepository;
 use PHPUnit\Framework\TestCase;
+require_once __DIR__."/../Helper\helper.php";
+
 // use MochamadWahyu\Phpmvc\Service\SessionService;
 
-function setcookie(string $name, string $value)
-{
-    echo "$name: $value";
-}
+
 
 class SessionServiceTest extends TestCase
 {

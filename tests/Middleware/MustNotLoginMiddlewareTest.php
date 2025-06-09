@@ -1,11 +1,4 @@
-<?php   
-namespace MochamadWahyu\Phpmvc\App {
-    function header(string $value)
-    {
-        echo $value;
-    }
-
-}
+<?php
 namespace MochamadWahyu\Phpmvc\MiddleWare{
 
     use MochamadWahyu\Phpmvc\Config\Database;
@@ -15,6 +8,7 @@ namespace MochamadWahyu\Phpmvc\MiddleWare{
     use MochamadWahyu\Phpmvc\Repository\SessionRepository;
     use MochamadWahyu\Phpmvc\Domain\Session;
     use MochamadWahyu\Phpmvc\Service\SessionService;
+    require_once __DIR__."/../Helper\helper.php";
 
 class MustNotLoginMiddlewareTest extends TestCase
 {
